@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { Switch, Route, Link } from "react-router-dom";
 import Movies from "./components/Movies";
-import Admin from "./components/Admin";
 import Home from "./components/Home";
 import OneMovie from "./components/OneMovie";
 import Genres from "./components/Genres";
@@ -22,8 +21,18 @@ export default class App extends Component {
     this.setState({ jwt: jwt });
   };
 
+  componentDidMount() {
+    let t = localStorage.getItem("jwt");
+    if (t) {
+      if (this.state.jwt === "") {
+        this.setState({ jwt: JSON.parse(t) });
+      }
+    }
+  }
+
   logout = () => {
     this.setState({ jwt: "" });
+    localStorage.removeItem("jwt");
   };
 
   render() {
@@ -106,9 +115,6 @@ export default class App extends Component {
                   )}
                 />
 
-                <Route path="/admin">
-                  <Admin />
-                </Route>
                 <Route path="/">
                   <Home />
                 </Route>
