@@ -15,6 +15,7 @@ export default class Admin extends Component {
       });
       return;
     }
+    
     fetch("http://localhost:4000/v1/movies")
       .then((response) => {
         if (response.status !== "200") {

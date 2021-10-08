@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
-import { Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Movies from "./components/Movies";
+import Admin from "./components/Admin";
 import Home from "./components/Home";
 import OneMovie from "./components/OneMovie";
 import Genres from "./components/Genres";
@@ -19,12 +20,8 @@ export default class App extends Component {
     this.handleJWTChange(this.handleJWTChange.bind(this));
   }
 
-  handleJWTChange = (jwt) => {
-    this.setState({ jwt: jwt });
-  };
-
   componentDidMount() {
-    let t = localStorage.getItem("jwt");
+    let t = window.localStorage.getItem("jwt");
     if (t) {
       if (this.state.jwt === "") {
         this.setState({ jwt: JSON.parse(t) });
@@ -32,9 +29,13 @@ export default class App extends Component {
     }
   }
 
+  handleJWTChange = (jwt) => {
+    this.setState({ jwt: jwt });
+  };
+
   logout = () => {
     this.setState({ jwt: "" });
-    localStorage.removeItem("jwt");
+    window.localStorage.removeItem("jwt");
   };
 
   render() {
@@ -50,7 +51,7 @@ export default class App extends Component {
     }
 
     return (
-      <>
+      <Router>
         <div className="container">
           <div className="row">
             <div className="col mt-3">
@@ -87,7 +88,6 @@ export default class App extends Component {
                     <Link to="/graphql">GraphQL</Link>
                   </li>
                 </ul>
-                <pre>{JSON.stringify(this.state, null, 3)}</pre>
               </nav>
             </div>
 
@@ -125,6 +125,13 @@ export default class App extends Component {
                   )}
                 />
 
+                <Route
+                  path="/admin"
+                  component={(props) => (
+                    <Admin {...props} jwt={this.state.jwt} />
+                  )}
+                />
+
                 <Route path="/">
                   <Home />
                 </Route>
@@ -132,7 +139,7 @@ export default class App extends Component {
             </div>
           </div>
         </div>
-      </>
+      </Router>
     );
   }
 }
